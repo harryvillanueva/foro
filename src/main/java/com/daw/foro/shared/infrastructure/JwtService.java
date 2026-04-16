@@ -26,4 +26,13 @@ public class JwtService {
                 .signWith(SECRET_KEY)
                 .compact();
     }
+
+    // Método para leer el token y extraer su información
+    public io.jsonwebtoken.Claims extraerClaims(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(SECRET_KEY)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+    }
 }

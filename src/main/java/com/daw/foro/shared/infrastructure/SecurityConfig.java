@@ -1,5 +1,6 @@
 package com.daw.foro.shared.infrastructure;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -17,23 +18,25 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+    @Autowired
+    private JwtFilter jwtFilter;
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        // 1. Permitir la API de autenticación
                         .requestMatchers("/api/auth/**").permitAll()
-
-                        // 2. Permitir el acceso a los archivos HTML públicos
                         .requestMatchers("/", "/index.html", "/registro.html", "/login.html").permitAll()
-
-                        // 3. Permitir el acceso a las carpetas de recursos estáticos (Vanilla JS, CSS, imágenes)
                         .requestMatchers("/js/**", "/css/**", "/img/**").permitAll()
 
-                        // 4. Todo lo demás (otras APIs) requerirá token más adelante
+                        // NUEVO: Protegeremos las rutas de las salas para que solo el Superadmin las cree
+                        .requestMatchers("/api/salas/admin/**").hasRole("SUPERADMIN")
+
                         .anyRequest().authenticated()
-                );
+                )
+                // NUEVO: Añadimos nuestro filtro antes del filtro por defecto de Spring
+                .addFilterBefore(jwtFilter, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
