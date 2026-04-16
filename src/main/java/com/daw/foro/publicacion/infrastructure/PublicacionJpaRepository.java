@@ -8,8 +8,16 @@ import java.util.List;
 
 @Repository
 public interface PublicacionJpaRepository extends JpaRepository<PublicacionEntity, Long> {
-    // Magia de Spring Data: Buscar preguntas aprobadas de una sala ordenadas por la más reciente
+
+    // Buscar preguntas de una sala
     List<PublicacionEntity> findBySalaIdAndTipoAndEstadoOrderByFechaCreacionDesc(Long salaId, TipoPublicacion tipo, EstadoPublicacion estado);
-    // Buscar publicaciones por sala y estado
-    java.util.List<PublicacionEntity> findBySalaIdAndEstadoOrderByFechaCreacionDesc(Long salaId, com.daw.foro.publicacion.domain.EstadoPublicacion estado);
+
+    // Buscar respuestas de una pregunta
+    List<PublicacionEntity> findByPreguntaPadreIdAndEstadoOrderByFechaCreacionAsc(Long preguntaPadreId, EstadoPublicacion estado);
+
+    // NUEVO: Contar cuántas respuestas tiene una pregunta específica
+    long countByPreguntaPadreIdAndEstado(Long preguntaPadreId, EstadoPublicacion estado);
+
+    // Buscar pendientes para el moderador
+    List<PublicacionEntity> findBySalaIdAndEstadoOrderByFechaCreacionDesc(Long salaId, EstadoPublicacion estado);
 }
