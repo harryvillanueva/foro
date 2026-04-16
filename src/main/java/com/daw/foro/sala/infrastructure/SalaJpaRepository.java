@@ -5,4 +5,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface SalaJpaRepository extends JpaRepository<SalaEntity, Long> {
+    long countByModeradorId(Long moderadorId);
 }

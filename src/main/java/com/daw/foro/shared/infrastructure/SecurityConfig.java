@@ -27,11 +27,11 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/", "/index.html", "/registro.html", "/login.html").permitAll()
-                        .requestMatchers("/js/**", "/css/**", "/img/**").permitAll()
+                        .requestMatchers("/", "/*.html", "/js/**", "/css/**", "/img/**").permitAll()
 
                         // NUEVO: Protegeremos las rutas de las salas para que solo el Superadmin las cree
                         .requestMatchers("/api/salas/admin/**").hasRole("SUPERADMIN")
+                        .requestMatchers("/api/admin/**").hasRole("SUPERADMIN")
 
                         .anyRequest().authenticated()
                 )

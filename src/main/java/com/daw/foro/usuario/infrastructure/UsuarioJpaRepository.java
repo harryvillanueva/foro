@@ -9,4 +9,5 @@ import java.util.Optional;
 public interface UsuarioJpaRepository extends JpaRepository<UsuarioEntity, Long> {
     // Spring Data crea automáticamente la consulta SQL para buscar por email
     Optional<UsuarioEntity> findByEmail(String email);
+    java.util.List<UsuarioEntity> findByRol(com.daw.foro.usuario.domain.Rol rol);
 }

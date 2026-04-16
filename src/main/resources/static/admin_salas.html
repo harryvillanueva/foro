@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Panel Admin - Gestión de Salas</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 min-h-screen">
+<nav class="bg-blue-800 p-4 text-white flex justify-between">
+    <h1 class="font-bold">Foro DAW - Administración</h1>
+    <a href="index.html" class="underline">Volver al Inicio</a>
+</nav>
+
+<div class="max-w-4xl mx-auto p-6">
+    <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+        <h2 class="text-xl font-bold mb-4">Crear Nueva Sala Temática</h2>
+        <form id="formCrearSala" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <input type="text" id="nombreSala" placeholder="Nombre de la sala" required class="border p-2 rounded">
+            <input type="text" id="tematicaSala" placeholder="Temática (Ej: Java)" required class="border p-2 rounded">
+            <div class="flex items-center">
+                <input type="checkbox" id="modSala" class="mr-2">
+                <label for="modSala">¿Requiere moderación?</label>
+            </div>
+            <button type="submit" class="bg-green-600 text-white p-2 rounded hover:bg-green-700 transition col-span-full">
+                Crear Sala Visualmente
+            </button>
+        </form>
+        <div id="mensajeAlerta" class="hidden mt-4"></div>
+    </div>
+
+    <div class="bg-white p-6 rounded-lg shadow-md mt-8">
+        <h2 class="text-xl font-bold mb-4">Salas Existentes</h2>
+        <table class="w-full text-left border-collapse">
+            <thead>
+            <tr class="bg-gray-100">
+                <th class="p-2 border">Nombre</th>
+                <th class="p-2 border">Temática</th>
+                <th class="p-2 border text-center">Moderación</th>
+                <th class="p-2 border">Moderador Asignado</th> </tr>
+            </thead>
+            <tbody id="listaSalas">
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script type="module" src="js/admin_salas.js"></script>
+</body>
+</html>

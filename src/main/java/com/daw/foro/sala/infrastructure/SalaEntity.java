@@ -19,6 +19,9 @@ public class SalaEntity {
     @Column(nullable = false)
     private boolean requiereModeracion;
 
+    @Column(name = "moderador_id", nullable = true)
+    private Long moderadorId;
+
     public SalaEntity() {}
 
     public SalaEntity(String nombre, String tematica, boolean requiereModeracion) {
@@ -36,4 +39,6 @@ public class SalaEntity {
     public void setTematica(String tematica) { this.tematica = tematica; }
     public boolean isRequiereModeracion() { return requiereModeracion; }
     public void setRequiereModeracion(boolean requiereModeracion) { this.requiereModeracion = requiereModeracion; }
+    public Long getModeradorId() { return moderadorId; }
+    public void setModeradorId(Long moderadorId) { this.moderadorId = moderadorId; }
 }
