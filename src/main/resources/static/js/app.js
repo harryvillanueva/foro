@@ -1,7 +1,8 @@
 // js/app.js
 
 // Constante global para no repetir la URL del backend en cada archivo
-export const API_BASE_URL = 'http://localhost:8080/api';
+
+export const API_BASE_URL = '/api'; // Más limpio y seguro
 
 /**
  * Función genérica para mostrar mensajes de éxito o error en la UI.

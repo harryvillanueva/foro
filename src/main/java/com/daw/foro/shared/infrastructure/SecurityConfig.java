@@ -12,19 +12,26 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    // Este Bean permite inyectar el encriptador con @Autowired en cualquier parte
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    // Por ahora, permitiremos acceso a las rutas de autenticación
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable()) // Deshabilitamos CSRF temporalmente para probar con Postman
+                .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**").permitAll() // Permite registro y login a todos
+                        // 1. Permitir la API de autenticación
+                        .requestMatchers("/api/auth/**").permitAll()
+
+                        // 2. Permitir el acceso a los archivos HTML públicos
+                        .requestMatchers("/", "/index.html", "/registro.html", "/login.html").permitAll()
+
+                        // 3. Permitir el acceso a las carpetas de recursos estáticos (Vanilla JS, CSS, imágenes)
+                        .requestMatchers("/js/**", "/css/**", "/img/**").permitAll()
+
+                        // 4. Todo lo demás (otras APIs) requerirá token más adelante
                         .anyRequest().authenticated()
                 );
 
