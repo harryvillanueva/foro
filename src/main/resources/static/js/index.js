@@ -60,7 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                     <h3 class="text-xl font-bold text-gray-800 mb-2">${sala.nombre}</h3>
                     <p class="text-gray-600 text-sm mb-4">Entra para participar y resolver tus dudas sobre ${sala.tematica}.</p>
-                    <button class="w-full bg-gray-50 hover:bg-blue-600 hover:text-white text-blue-600 font-semibold py-2 rounded-lg border border-blue-100 transition-colors">
+                    <button onclick="window.location.href='sala.html?id=${sala.id}' class="w-full bg-gray-50 hover:bg-blue-600 hover:text-white text-blue-600 font-semibold py-2 rounded-lg border border-blue-100 transition-colors">
                         Entrar a la Sala
                     </button>
                 `;
