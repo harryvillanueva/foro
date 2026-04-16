@@ -32,6 +32,7 @@ public class SecurityConfig {
                         // NUEVO: Protegeremos las rutas de las salas para que solo el Superadmin las cree
                         .requestMatchers("/api/salas/admin/**").hasRole("SUPERADMIN")
                         .requestMatchers("/api/admin/**").hasRole("SUPERADMIN")
+                        .requestMatchers("/api/moderacion/**").hasAnyRole("SUPERADMIN", "MODERADOR")
 
                         .anyRequest().authenticated()
                 )
