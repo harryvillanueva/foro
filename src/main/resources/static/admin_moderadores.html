@@ -6,23 +6,23 @@
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-50 min-h-screen">
-<nav class="bg-blue-800 p-4 text-white flex justify-between">
-    <h1 class="font-bold">Foro DAW - Administración</h1>
+<nav class="bg-blue-800 p-4 text-white flex justify-between shadow-lg">
+    <h1 class="font-bold text-xl">Foro DAW - Administración</h1>
     <div class="flex gap-4">
-        <a href="admin_salas.html" class="underline">Salas</a>
-        <a href="index.html" class="underline">Volver al Inicio</a>
+        <a href="admin_salas.html" class="underline hover:text-blue-200">Gestión de Salas</a>
+        <a href="index.html" class="underline hover:text-blue-200">Volver al Inicio</a>
     </div>
 </nav>
 
-<div class="max-w-5xl mx-auto p-6 grid grid-cols-1 md:grid-cols-2 gap-8">
+<div class="max-w-6xl mx-auto p-6 grid grid-cols-1 md:grid-cols-2 gap-8">
 
     <div class="bg-white p-6 rounded-lg shadow-md h-fit">
         <h2 class="text-xl font-bold mb-4">Registrar Nuevo Moderador</h2>
         <form id="formCrearModerador" class="space-y-4">
-            <input type="text" id="nombreMod" placeholder="Nombre completo" required class="w-full border p-2 rounded">
-            <input type="email" id="emailMod" placeholder="Correo electrónico" required class="w-full border p-2 rounded">
-            <input type="password" id="passwordMod" placeholder="Contraseña" required class="w-full border p-2 rounded">
-            <button type="submit" class="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700">Registrar Moderador</button>
+            <input type="text" id="nombreMod" placeholder="Nombre completo" required class="w-full border p-2 rounded focus:ring-2 focus:ring-blue-400">
+            <input type="email" id="emailMod" placeholder="Correo electrónico" required class="w-full border p-2 rounded focus:ring-2 focus:ring-blue-400">
+            <input type="password" id="passwordMod" placeholder="Contraseña" required class="w-full border p-2 rounded focus:ring-2 focus:ring-blue-400">
+            <button type="submit" class="w-full bg-blue-600 text-white p-2 rounded font-bold hover:bg-blue-700">Registrar Moderador</button>
         </form>
         <div id="alertaMod" class="hidden mt-4"></div>
     </div>
@@ -32,33 +32,43 @@
         <form id="formAsignarModerador" class="space-y-4">
             <div>
                 <label class="block text-sm font-bold mb-1">Selecciona el Moderador:</label>
-                <select id="selectModerador" required class="w-full border p-2 rounded">
-                    <option value="">Cargando moderadores...</option>
-                </select>
+                <select id="selectModerador" required class="w-full border p-2 rounded"><option value="">Cargando...</option></select>
             </div>
             <div>
                 <label class="block text-sm font-bold mb-1">Selecciona la Sala:</label>
-                <select id="selectSala" required class="w-full border p-2 rounded">
-                    <option value="">Cargando salas...</option>
-                </select>
+                <select id="selectSala" required class="w-full border p-2 rounded"><option value="">Cargando...</option></select>
             </div>
-            <button type="submit" class="w-full bg-green-600 text-white p-2 rounded hover:bg-green-700">Asignar a Sala</button>
+            <button type="submit" class="w-full bg-green-600 text-white p-2 rounded font-bold hover:bg-green-700">Asignar a Sala</button>
         </form>
         <div id="alertaAsignacion" class="hidden mt-4"></div>
     </div>
 
     <div class="bg-white p-6 rounded-lg shadow-md col-span-1 md:col-span-2">
-        <h2 class="text-xl font-bold mb-4">Lista de Moderadores del Foro</h2>
-        <table class="w-full text-left border-collapse">
+        <h2 class="text-xl font-bold mb-4 text-gray-800">Salas con Moderador Asignado</h2>
+        <table class="w-full text-left border-collapse border border-gray-200">
             <thead>
             <tr class="bg-gray-100">
-                <th class="p-2 border">ID</th>
-                <th class="p-2 border">Nombre</th>
-                <th class="p-2 border">Email</th>
+                <th class="p-3 border">Sala Temática</th>
+                <th class="p-3 border">Moderador a Cargo</th>
+                <th class="p-3 border text-center">Acción</th>
             </tr>
             </thead>
-            <tbody id="listaModeradoresTabla">
+            <tbody id="listaSalasModeradas">
             </tbody>
+        </table>
+    </div>
+
+    <div class="bg-white p-6 rounded-lg shadow-md col-span-1 md:col-span-2">
+        <h2 class="text-xl font-bold mb-4 text-gray-800">Directorio General de Moderadores</h2>
+        <table class="w-full text-left border-collapse border border-gray-200">
+            <thead>
+            <tr class="bg-gray-100">
+                <th class="p-3 border">ID</th>
+                <th class="p-3 border">Nombre</th>
+                <th class="p-3 border">Email</th>
+            </tr>
+            </thead>
+            <tbody id="listaModeradoresTabla"></tbody>
         </table>
     </div>
 </div>

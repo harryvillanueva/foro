@@ -3,7 +3,6 @@ import { API_BASE_URL, mostrarAlerta } from './app.js';
 document.addEventListener('DOMContentLoaded', () => {
     const token = localStorage.getItem('jwt_foro');
 
-    // Validación de seguridad (El portero)
     if (!token) {
         window.location.href = 'login.html';
         return;
@@ -19,7 +18,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const tablaSalas = document.getElementById('listaSalas');
     const contenedorAlerta = document.getElementById('mensajeAlerta');
 
-    // 1. Función "Inteligente" para cargar salas con sus moderadores
     const cargarSalas = async () => {
         try {
             // A. Traemos todos los moderadores
@@ -28,7 +26,6 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             const moderadores = await respMods.json();
 
-            // Creamos un diccionario rápido { id: "Nombre del Moderador" }
             const mapaModeradores = {};
             moderadores.forEach(mod => {
                 mapaModeradores[mod.id] = mod.nombre;
@@ -40,33 +37,60 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             const salas = await respSalas.json();
 
-            // C. Pintamos la tabla cruzando los datos
+            // C. Pintamos la tabla
             tablaSalas.innerHTML = '';
             salas.forEach(sala => {
-
-                // Buscamos el nombre del moderador en nuestro diccionario
                 let moderadorBadge = `<span class="text-gray-400 italic">Sin asignar</span>`;
-
                 if (sala.moderadorId && mapaModeradores[sala.moderadorId]) {
-                    moderadorBadge = `<span class="bg-blue-100 text-blue-800 font-bold px-2 py-1 rounded">
-                                        <i class="fas fa-user-shield mr-1"></i> ${mapaModeradores[sala.moderadorId]}
-                                      </span>`;
+                    moderadorBadge = `<span class="bg-blue-100 text-blue-800 font-bold px-2 py-1 rounded"><i class="fas fa-user-shield mr-1"></i> ${mapaModeradores[sala.moderadorId]}</span>`;
                 }
 
                 tablaSalas.innerHTML += `
                     <tr class="hover:bg-gray-50 transition-colors">
-                        <td class="p-2 border font-medium">${sala.nombre}</td>
-                        <td class="p-2 border">${sala.tematica}</td>
-                        <td class="p-2 border text-center">${sala.requiereModeracion ? '✅' : '❌'}</td>
-                        <td class="p-2 border">${moderadorBadge}</td>
+                        <td class="p-3 border font-medium">${sala.nombre}</td>
+                        <td class="p-3 border">${sala.tematica}</td>
+                        <td class="p-3 border text-center">${sala.requiereModeracion ? '✅' : '❌'}</td>
+                        <td class="p-3 border">${moderadorBadge}</td>
+                        <td class="p-3 border text-center">
+                            <button data-id="${sala.id}" data-nombre="${sala.nombre}" class="btn-eliminar bg-red-100 text-red-700 hover:bg-red-600 hover:text-white px-3 py-1 rounded font-bold transition-colors shadow-sm" title="Eliminar sala y sus preguntas">
+                                <i class="fas fa-trash-alt"></i> Borrar
+                            </button>
+                        </td>
                     </tr>`;
             });
+
+            // D. Asignamos evento a los botones de borrar
+            document.querySelectorAll('.btn-eliminar').forEach(btn => {
+                btn.addEventListener('click', async (e) => {
+                    const id = e.currentTarget.dataset.id;
+                    const nombre = e.currentTarget.dataset.nombre;
+
+                    if(confirm(`⚠️ ¡ATENCIÓN! ¿Estás totalmente seguro de querer eliminar la sala "${nombre}"?\n\nEsta acción borrará PERMANENTEMENTE todas sus preguntas, respuestas, suscripciones y bloqueos. No se puede deshacer.`)) {
+                        try {
+                            const resp = await fetch(`${API_BASE_URL}/salas/admin/eliminar/${id}`, {
+                                method: 'DELETE',
+                                headers: { 'Authorization': `Bearer ${token}` }
+                            });
+
+                            if (resp.ok) {
+                                alert("✅ La sala ha sido destruida permanentemente.");
+                                cargarSalas(); // Recargamos
+                            } else {
+                                alert("❌ Error: " + await resp.text());
+                            }
+                        } catch (err) {
+                            alert("❌ Error de conexión al intentar borrar.");
+                        }
+                    }
+                });
+            });
+
         } catch (error) {
             console.error("Error al cargar los datos:", error);
+            tablaSalas.innerHTML = '<tr><td colspan="5" class="p-4 text-center text-red-500 font-bold">Error al cargar las salas.</td></tr>';
         }
     };
 
-    // 2. Manejar creación de sala
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
 
@@ -89,7 +113,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (resp.ok) {
                 mostrarAlerta(contenedorAlerta, "Sala creada con éxito", false);
                 form.reset();
-                cargarSalas(); // Recargamos la tabla al instante
+                cargarSalas();
             } else {
                 const errorText = await resp.text();
                 mostrarAlerta(contenedorAlerta, errorText, true);
@@ -99,6 +123,5 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Arrancamos la carga al abrir la página
     cargarSalas();
 });

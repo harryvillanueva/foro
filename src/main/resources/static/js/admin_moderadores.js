@@ -2,25 +2,8 @@ import { API_BASE_URL, mostrarAlerta } from './app.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     const token = localStorage.getItem('jwt_foro');
+    if (!token) { window.location.href = 'login.html'; return; }
 
-    // 1. Validar si está logueado
-        if (!token) {
-            window.location.href = 'login.html';
-            return;
-        }
-
-        // 2. Validar si es SUPERADMIN leyendo el token
-        const base64Url = token.split('.')[1];
-        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-        const payload = JSON.parse(window.atob(base64));
-
-        if (payload.rol !== 'SUPERADMIN') {
-            alert("Acceso denegado. No eres Superadministrador.");
-            window.location.href = 'index.html'; // Lo pateamos al inicio
-            return;
-        }
-
-    // Referencias al DOM
     const formCrearMod = document.getElementById('formCrearModerador');
     const formAsignarMod = document.getElementById('formAsignarModerador');
     const alertaMod = document.getElementById('alertaMod');
@@ -29,93 +12,82 @@ document.addEventListener('DOMContentLoaded', () => {
     const selectModerador = document.getElementById('selectModerador');
     const selectSala = document.getElementById('selectSala');
     const tablaModeradores = document.getElementById('listaModeradoresTabla');
+    const tablaSalasModeradas = document.getElementById('listaSalasModeradas');
 
-    // 1. Cargar lista de moderadores (Para la tabla y el select)
-    const cargarModeradores = async () => {
-        const resp = await fetch(`${API_BASE_URL}/admin/moderadores`, {
-            headers: { 'Authorization': `Bearer ${token}` }
-        });
-        const moderadores = await resp.json();
+    let moderadoresGlobal = [];
 
-        selectModerador.innerHTML = '<option value="">Elige un moderador...</option>';
-        tablaModeradores.innerHTML = '';
+    const cargarDatos = async () => {
+        try {
+            // 1. Cargar Mods
+            const respMods = await fetch(`${API_BASE_URL}/admin/moderadores`, { headers: { 'Authorization': `Bearer ${token}` }});
+            moderadoresGlobal = await respMods.json();
 
-        moderadores.forEach(mod => {
-            // Llenar tabla
-            tablaModeradores.innerHTML += `
-                <tr>
-                    <td class="p-2 border text-gray-500 font-bold">#${mod.id}</td>
-                    <td class="p-2 border">${mod.nombre}</td>
-                    <td class="p-2 border">${mod.email}</td>
-                </tr>`;
+            selectModerador.innerHTML = '<option value="">Elige un moderador...</option>';
+            tablaModeradores.innerHTML = '';
+            moderadoresGlobal.forEach(mod => {
+                tablaModeradores.innerHTML += `<tr><td class="p-3 border text-gray-500 font-bold">#${mod.id}</td><td class="p-3 border">${mod.nombre}</td><td class="p-3 border">${mod.email}</td></tr>`;
+                selectModerador.innerHTML += `<option value="${mod.id}">${mod.nombre} (${mod.email})</option>`;
+            });
 
-            // Llenar select de asignación
-            selectModerador.innerHTML += `<option value="${mod.id}">${mod.nombre} (${mod.email})</option>`;
-        });
+            // 2. Cargar Salas
+            const respSalas = await fetch(`${API_BASE_URL}/salas`, { headers: { 'Authorization': `Bearer ${token}` }});
+            const salas = await respSalas.json();
+
+            selectSala.innerHTML = '<option value="">Elige una sala...</option>';
+            salas.forEach(sala => {
+                selectSala.innerHTML += `<option value="${sala.id}">${sala.nombre} (${sala.moderadorId ? 'Ocupada' : 'Libre'})</option>`;
+            });
+
+            // 3. Llenar tabla de "Quitar Moderador"
+            const salasOcupadas = salas.filter(s => s.moderadorId != null);
+            tablaSalasModeradas.innerHTML = '';
+
+            if(salasOcupadas.length === 0) {
+                tablaSalasModeradas.innerHTML = '<tr><td colspan="3" class="p-4 text-center text-gray-500">No hay salas con moderadores asignados.</td></tr>';
+            } else {
+                salasOcupadas.forEach(sala => {
+                    const mod = moderadoresGlobal.find(m => m.id === sala.moderadorId);
+                    const modNombre = mod ? mod.nombre : `ID Desconocido: ${sala.moderadorId}`;
+
+                    tablaSalasModeradas.innerHTML += `
+                        <tr class="hover:bg-gray-50">
+                            <td class="p-3 border font-medium">${sala.nombre}</td>
+                            <td class="p-3 border text-blue-600 font-bold">${modNombre}</td>
+                            <td class="p-3 border text-center">
+                                <button data-id="${sala.id}" class="btn-quitar bg-red-100 text-red-600 hover:bg-red-600 hover:text-white px-4 py-1 rounded font-bold transition-colors">Quitar Moderador</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+
+                document.querySelectorAll('.btn-quitar').forEach(btn => {
+                    btn.addEventListener('click', async (e) => {
+                        if(confirm('¿Seguro que deseas remover al moderador de esta sala?')) {
+                            const resp = await fetch(`${API_BASE_URL}/salas/admin/remover-moderador/${e.currentTarget.dataset.id}`, { method: 'POST', headers: { 'Authorization': `Bearer ${token}` }});
+                            if(resp.ok) cargarDatos();
+                            else alert("Error al quitar moderador.");
+                        }
+                    });
+                });
+            }
+        } catch (error) { console.error("Error", error); }
     };
 
-    // 2. Cargar salas (Para el select de asignación)
-    const cargarSalas = async () => {
-        const resp = await fetch(`${API_BASE_URL}/salas`, {
-            headers: { 'Authorization': `Bearer ${token}` }
-        });
-        const salas = await resp.json();
-
-        selectSala.innerHTML = '<option value="">Elige una sala...</option>';
-        salas.forEach(sala => {
-            selectSala.innerHTML += `<option value="${sala.id}">${sala.nombre} (Mod. ID: ${sala.moderadorId || 'Sin asignar'})</option>`;
-        });
-    };
-
-    // 3. Crear nuevo moderador
     formCrearMod.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const datos = {
-            nombre: document.getElementById('nombreMod').value,
-            email: document.getElementById('emailMod').value,
-            password: document.getElementById('passwordMod').value
-        };
-
-        const resp = await fetch(`${API_BASE_URL}/admin/moderadores/registro`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-            body: JSON.stringify(datos)
-        });
-
-        if (resp.ok) {
-            mostrarAlerta(alertaMod, "Moderador creado con éxito.", false);
-            formCrearMod.reset();
-            cargarModeradores(); // Recargar la lista
-        } else {
-            const error = await resp.text();
-            mostrarAlerta(alertaMod, error, true);
-        }
+        const datos = { nombre: document.getElementById('nombreMod').value, email: document.getElementById('emailMod').value, password: document.getElementById('passwordMod').value };
+        const resp = await fetch(`${API_BASE_URL}/admin/moderadores/registro`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }, body: JSON.stringify(datos) });
+        if (resp.ok) { mostrarAlerta(alertaMod, "Moderador creado", false); formCrearMod.reset(); cargarDatos(); }
+        else { const err = await resp.text(); mostrarAlerta(alertaMod, err, true); }
     });
 
-    // 4. Asignar Moderador a Sala
     formAsignarMod.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const datos = {
-            moderadorId: selectModerador.value,
-            salaId: selectSala.value
-        };
-
-        const resp = await fetch(`${API_BASE_URL}/salas/admin/asignar-moderador`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-            body: JSON.stringify(datos)
-        });
-
-        if (resp.ok) {
-            mostrarAlerta(alertaAsignacion, "¡Asignación exitosa!", false);
-            cargarSalas(); // Recargar para ver el ID actualizado en el select
-        } else {
-            const error = await resp.text();
-            mostrarAlerta(alertaAsignacion, error, true);
-        }
+        const datos = { moderadorId: selectModerador.value, salaId: selectSala.value };
+        const resp = await fetch(`${API_BASE_URL}/salas/admin/asignar-moderador`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }, body: JSON.stringify(datos) });
+        if (resp.ok) { mostrarAlerta(alertaAsignacion, "¡Asignación exitosa!", false); cargarDatos(); }
+        else { const err = await resp.text(); mostrarAlerta(alertaAsignacion, err, true); }
     });
 
-    // Inicializar cargando datos
-    cargarModeradores();
-    cargarSalas();
+    cargarDatos();
 });

@@ -13,14 +13,14 @@ public class SalaEntity {
     @Column(nullable = false, unique = true)
     private String nombre;
 
-    @Column(nullable = false)
     private String tematica;
-
-    @Column(nullable = false)
     private boolean requiereModeracion;
 
     @Column(name = "moderador_id", nullable = true)
     private Long moderadorId;
+
+    @Column(nullable = false, columnDefinition = "int default 0")
+    private int limitePreguntasSemana = 0; // 0 significa que no hay límite
 
     public SalaEntity() {}
 
@@ -30,7 +30,6 @@ public class SalaEntity {
         this.requiereModeracion = requiereModeracion;
     }
 
-    // Getters y Setters... (hazlos tú mismo sin Lombok 😉)
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     public String getNombre() { return nombre; }
@@ -41,4 +40,6 @@ public class SalaEntity {
     public void setRequiereModeracion(boolean requiereModeracion) { this.requiereModeracion = requiereModeracion; }
     public Long getModeradorId() { return moderadorId; }
     public void setModeradorId(Long moderadorId) { this.moderadorId = moderadorId; }
+    public int getLimitePreguntasSemana() { return limitePreguntasSemana; }
+    public void setLimitePreguntasSemana(int limitePreguntasSemana) { this.limitePreguntasSemana = limitePreguntasSemana; }
 }

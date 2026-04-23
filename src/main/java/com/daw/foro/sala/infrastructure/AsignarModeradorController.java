@@ -10,14 +10,24 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/salas/admin")
 public class AsignarModeradorController {
 
-    @Autowired
-    private AsignarModeradorApp asignarModeradorApp;
+    @Autowired private AsignarModeradorApp asignarModeradorApp;
 
     @PostMapping("/asignar-moderador")
     public ResponseEntity<String> asignar(@RequestBody AsignarModeradorRequestDTO dto) {
         try {
             asignarModeradorApp.ejecutar(dto.getSalaId(), dto.getModeradorId());
             return ResponseEntity.ok("Moderador asignado a la sala con éxito.");
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    // NUEVO ENDPOINT
+    @PostMapping("/remover-moderador/{salaId}")
+    public ResponseEntity<String> remover(@PathVariable Long salaId) {
+        try {
+            asignarModeradorApp.remover(salaId);
+            return ResponseEntity.ok("Moderador quitado exitosamente.");
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
