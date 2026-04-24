@@ -1,4 +1,4 @@
-import { API_BASE_URL, mostrarAlerta, initGlobalFeatures } from './app.js';
+import { API_BASE_URL, mostrarAlerta, initGlobalFeatures, swalCustom } from './app.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     initGlobalFeatures();
@@ -24,9 +24,24 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         document.querySelectorAll('.btn-eliminar').forEach(btn => btn.addEventListener('click', async (e) => {
-            if(confirm("¿Eliminar sala definitivamente?")) {
-                await fetch(`${API_BASE_URL}/salas/admin/eliminar/${e.currentTarget.dataset.id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` } });
-                cargarSalas();
+            // SOLUCIÓN: Guardar el ID antes del await
+            const salaId = e.currentTarget.dataset.id;
+
+            const result = await swalCustom().fire({
+                title: '¿Eliminar sala definitivamente?',
+                text: "Esta acción borrará todas sus preguntas y no se puede deshacer.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Sí, borrar',
+                cancelButtonText: 'Cancelar',
+                customClass: { confirmButton: 'bg-red-600 text-white px-4 py-2 rounded mx-2 hover:bg-red-700', cancelButton: 'bg-gray-500 text-white px-4 py-2 rounded mx-2 hover:bg-gray-600' }
+            });
+
+            if(result.isConfirmed) {
+                // Usamos la variable salaId guardada
+                const resp = await fetch(`${API_BASE_URL}/salas/admin/eliminar/${salaId}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` } });
+                if(resp.ok) { mostrarAlerta(null, "La sala ha sido destruida.", false); cargarSalas(); }
+                else { mostrarAlerta(null, await resp.text(), true); }
             }
         }));
     };
@@ -35,8 +50,8 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         const datos = { nombre: document.getElementById('nombreSala').value, tematica: document.getElementById('tematicaSala').value, requiereModeracion: document.getElementById('modSala').checked };
         const resp = await fetch(`${API_BASE_URL}/salas/admin/crear`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }, body: JSON.stringify(datos) });
-        if (resp.ok) { document.getElementById('formCrearSala').reset(); cargarSalas(); }
-        else { alert(await resp.text()); }
+        if (resp.ok) { document.getElementById('formCrearSala').reset(); cargarSalas(); mostrarAlerta(null, "Sala creada con éxito", false); }
+        else { mostrarAlerta(null, await resp.text(), true); }
     });
 
     cargarSalas();

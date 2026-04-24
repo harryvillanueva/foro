@@ -1,10 +1,31 @@
 export const API_BASE_URL = '/api';
 
+// ==========================================
+// SWEETALERT2: Configuración dinámica (Dark Mode & Tailwind)
+// ==========================================
+export function swalCustom() {
+    const isDark = document.documentElement.classList.contains('dark');
+    return Swal.mixin({
+        background: isDark ? '#1f2937' : '#ffffff', // Gris oscuro o blanco
+        color: isDark ? '#ffffff' : '#111827',
+        customClass: {
+            confirmButton: 'bg-blue-600 text-white px-4 py-2 rounded font-bold hover:bg-blue-700 mx-2 transition-colors',
+            cancelButton: 'bg-gray-500 text-white px-4 py-2 rounded font-bold hover:bg-gray-600 mx-2 transition-colors',
+            input: 'border p-2 rounded w-full dark:bg-gray-700 dark:border-gray-600 dark:text-white mt-4'
+        },
+        buttonsStyling: false // Obliga a usar las clases de Tailwind
+    });
+}
+
+// Ahora mostrarAlerta usa SweetAlert en toda la web
 export function mostrarAlerta(elementoContenedor, mensaje, esError = false) {
-    elementoContenedor.textContent = mensaje;
-    elementoContenedor.className = `mt-4 p-3 rounded text-white text-center font-semibold transition-all duration-300 block ${esError ? 'bg-red-500' : 'bg-green-500'}`;
-    elementoContenedor.classList.remove('hidden');
-    setTimeout(() => { elementoContenedor.classList.add('hidden'); }, 4000);
+    swalCustom().fire({
+        icon: esError ? 'error' : 'success',
+        title: esError ? '¡Oops!' : '¡Éxito!',
+        text: mensaje,
+        timer: 3000,
+        showConfirmButton: false
+    });
 }
 
 // ==========================================
@@ -53,9 +74,6 @@ function actualizarIconoTema(isDark) {
     if (btnTheme) btnTheme.innerHTML = isDark ? '<i class="fas fa-sun text-yellow-300"></i>' : '<i class="fas fa-moon text-gray-200"></i>';
 }
 
-// ==========================================
-// NAVBAR Y RUTAS (Global)
-// ==========================================
 function configurarNavbar() {
     const token = localStorage.getItem('jwt_foro');
     if (!token) return;

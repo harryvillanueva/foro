@@ -1,4 +1,4 @@
-import { API_BASE_URL, initGlobalFeatures } from './app.js';
+import { API_BASE_URL, initGlobalFeatures, mostrarAlerta } from './app.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     initGlobalFeatures();
@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         : '<span class="text-red-600 dark:text-red-400 font-bold"><i class="fas fa-ban"></i> BANEADO</span>'}
                 </td>
                 <td class="p-4 text-center">
-                    <button data-id="${u.id}" class="btn-toggle px-4 py-1 rounded font-bold text-sm transition ${u.activo ? 'bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400 hover:bg-red-600 hover:text-white' : 'bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400 hover:bg-green-600 hover:text-white'}">
+                    <button data-id="${u.id}" class="btn-toggle px-4 py-1 rounded font-bold text-sm transition ${u.activo ? 'bg-red-100 text-red-600 hover:bg-red-600 hover:text-white' : 'bg-green-100 text-green-600 hover:bg-green-600 hover:text-white'}">
                         ${u.activo ? 'Banear Usuario' : 'Restaurar Cuenta'}
                     </button>
                 </td>
@@ -33,8 +33,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         document.querySelectorAll('.btn-toggle').forEach(btn => btn.addEventListener('click', async (e) => {
-            await fetch(`${API_BASE_URL}/admin/usuarios/${e.currentTarget.dataset.id}/toggle-activo`, { method: 'POST', headers: { 'Authorization': `Bearer ${token}` } });
-            cargarUsuarios();
+            const resp = await fetch(`${API_BASE_URL}/admin/usuarios/${e.currentTarget.dataset.id}/toggle-activo`, { method: 'POST', headers: { 'Authorization': `Bearer ${token}` } });
+            if(resp.ok) { mostrarAlerta(null, "Estado actualizado", false); cargarUsuarios(); }
+            else { mostrarAlerta(null, await resp.text(), true); }
         }));
     };
     cargarUsuarios();
