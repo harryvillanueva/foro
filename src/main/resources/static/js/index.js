@@ -1,6 +1,9 @@
-import { API_BASE_URL } from './app.js';
+import { API_BASE_URL, initGlobalFeatures, diccionario, obtenerIdiomaActual } from './app.js';
 
 document.addEventListener('DOMContentLoaded', () => {
+    // 1. ARRANCAR CARACTERÍSTICAS GLOBALES
+    initGlobalFeatures();
+
     const token = localStorage.getItem('jwt_foro');
     if (!token) { window.location.href = 'login.html'; return; }
 
@@ -10,6 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (payload.rol === 'SUPERADMIN') {
         document.getElementById('link-admin-salas')?.classList.remove('hidden');
         document.getElementById('link-admin-mods')?.classList.remove('hidden');
+        document.getElementById('link-admin-users')?.classList.remove('hidden');
     }
     if (payload.rol === 'SUPERADMIN' || payload.rol === 'MODERADOR') {
         document.getElementById('link-moderacion')?.classList.remove('hidden');
@@ -22,11 +26,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const cargarSalasVisibles = async () => {
         try {
-            // 1. Cargar todas las salas
             const respSalas = await fetch(`${API_BASE_URL}/salas`, { headers: { 'Authorization': `Bearer ${token}` } });
             const salas = await respSalas.json();
 
-            // 2. Cargar mis suscripciones
             const respSubs = await fetch(`${API_BASE_URL}/suscripciones/mis-suscripciones`, { headers: { 'Authorization': `Bearer ${token}` } });
             const suscripciones = await respSubs.json();
 
@@ -40,27 +42,31 @@ document.addEventListener('DOMContentLoaded', () => {
             contenedorSalas.innerHTML = '';
             contenedorFavs.innerHTML = '';
 
+            const lang = obtenerIdiomaActual();
+            const txtEntrar = diccionario[lang]["btn.entrar"];
+            const txtSuscrito = diccionario[lang]["badge.suscrito"];
+
             salas.forEach(sala => {
                 const card = document.createElement('div');
-                card.className = "bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow relative";
+                // Clases dark: para las tarjetas dinámicas
+                card.className = "bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-md transition-all relative";
 
                 const esFavorita = favIds.includes(sala.id);
                 const esSuscrito = subIds.includes(sala.id);
 
                 card.innerHTML = `
                     <div class="flex justify-between items-start mb-4">
-                        <span class="bg-blue-100 text-blue-600 text-xs font-bold px-2 py-1 rounded-lg uppercase">${sala.tematica}</span>
+                        <span class="bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300 text-xs font-bold px-2 py-1 rounded-lg uppercase">${sala.tematica}</span>
                         <div class="flex gap-2">
-                            ${esFavorita ? '<i class="fas fa-star text-orange-400" title="Favorita"></i>' : ''}
-                            ${sala.requiereModeracion ? '<i class="fas fa-shield-halved text-orange-400" title="Sala Moderada"></i>' : ''}
+                            ${esFavorita ? '<i class="fas fa-star text-orange-400"></i>' : ''}
+                            ${sala.requiereModeracion ? '<i class="fas fa-shield-halved text-orange-400"></i>' : ''}
                         </div>
                     </div>
-                    <h3 class="text-xl font-bold text-gray-800 mb-2">${sala.nombre}</h3>
-                    <p class="text-gray-600 text-sm mb-4">Entra para participar en ${sala.tematica}.</p>
-                    <button data-id="${sala.id}" class="btn-entrar w-full bg-blue-50 hover:bg-blue-600 hover:text-white text-blue-600 font-semibold py-2 rounded-lg transition-colors">
-                        Entrar a la Sala
+                    <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-2">${sala.nombre}</h3>
+                    <button data-id="${sala.id}" class="btn-entrar w-full bg-blue-50 dark:bg-gray-700 hover:bg-blue-600 dark:hover:bg-blue-500 hover:text-white text-blue-600 dark:text-blue-200 font-semibold py-2 rounded-lg transition-colors mt-4">
+                        ${txtEntrar}
                     </button>
-                    ${esSuscrito ? '<span class="absolute -top-2 -right-2 bg-green-500 text-white text-[10px] px-2 py-1 rounded-full font-bold shadow-sm">SUSCRITO</span>' : ''}
+                    ${esSuscrito ? `<span class="absolute -top-2 -right-2 bg-green-500 text-white text-[10px] px-2 py-1 rounded-full font-bold shadow-sm">${txtSuscrito}</span>` : ''}
                 `;
 
                 if (esFavorita) {
@@ -71,8 +77,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
 
-            if(favIds.length > 0) document.getElementById('titulo-explorar').textContent = 'Otras Salas';
-
             document.querySelectorAll('.btn-entrar').forEach(boton => {
                 boton.addEventListener('click', (e) => { window.location.href = `sala.html?id=${e.currentTarget.dataset.id}`; });
             });
@@ -81,4 +85,8 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     cargarSalasVisibles();
+
+    // Escuchar cambios de idioma para refrescar las tarjetas
+    document.getElementById('btn-lang-es')?.addEventListener('click', cargarSalasVisibles);
+    document.getElementById('btn-lang-en')?.addEventListener('click', cargarSalasVisibles);
 });

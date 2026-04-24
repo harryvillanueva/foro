@@ -7,38 +7,26 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Service
 public class AutenticarUsuarioApp {
 
-    @Autowired
-    private UsuarioJpaRepository usuarioRepository;
+    @Autowired private UsuarioJpaRepository usuarioRepository;
+    @Autowired private PasswordEncoder passwordEncoder;
+    @Autowired private JwtService jwtService;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    public String ejecutar(String email, String password) {
+        UsuarioEntity usuario = usuarioRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Credenciales inválidas"));
 
-    @Autowired
-    private JwtService jwtService;
-
-    // Retorna el Token JWT si el login es exitoso
-    public String ejecutar(String email, String passwordPlana) {
-
-        // 1. Buscamos al usuario por email
-        Optional<UsuarioEntity> usuarioOpt = usuarioRepository.findByEmail(email);
-
-        if (usuarioOpt.isEmpty()) {
-            throw new RuntimeException("Credenciales inválidas"); // Email no existe
+        // REGLA DE BANEO GLOBAL
+        if (!usuario.isActivo()) {
+            throw new RuntimeException("Tu cuenta ha sido DESACTIVADA permanentemente por la administración del foro.");
         }
 
-        UsuarioEntity usuario = usuarioOpt.get();
-
-        // 2. Comparamos la contraseña plana con el hash de la BD
-        if (!passwordEncoder.matches(passwordPlana, usuario.getPassword())) {
-            throw new RuntimeException("Credenciales inválidas"); // Contraseña incorrecta
+        if (passwordEncoder.matches(password, usuario.getPassword())) {
+            return jwtService.generarToken(usuario.getEmail(), usuario.getRol().name());
+        } else {
+            throw new RuntimeException("Credenciales inválidas");
         }
-
-        // 3. Si todo es correcto, generamos y devolvemos el token
-        return jwtService.generarToken(usuario.getEmail(), usuario.getRol().name());
     }
 }

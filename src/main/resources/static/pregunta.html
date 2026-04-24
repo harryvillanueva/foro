@@ -4,41 +4,58 @@
   <meta charset="UTF-8">
   <title>Foro DAW - Debate</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config = { darkMode: 'class' }</script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-<body class="bg-gray-100 min-h-screen">
+<body class="bg-gray-50 dark:bg-gray-900 transition-colors duration-300 min-h-screen">
 
-<nav class="bg-blue-900 text-white shadow-lg p-4">
-  <div class="max-w-4xl mx-auto flex justify-between items-center">
-    <h1 class="font-bold text-xl"><i class="fas fa-comments"></i> Foro DAW</h1>
-    <button id="btnVolverSala" class="hover:text-gray-300 underline"><i class="fas fa-arrow-left"></i> Volver a la Sala</button>
+<nav class="bg-blue-900 dark:bg-black text-white shadow-lg transition-colors duration-300">
+  <div class="max-w-7xl mx-auto px-4">
+    <div class="flex justify-between items-center h-16">
+      <div class="flex items-center space-x-2"><i class="fas fa-comments text-2xl text-blue-300"></i><span class="font-bold text-xl tracking-tight">Foro DAW</span></div>
+      <div class="hidden md:flex items-center space-x-6" id="nav-links">
+        <a href="index.html" class="hover:text-blue-300 transition" data-i18n="nav.inicio"><i class="fas fa-home mr-1"></i> Inicio</a>
+        <a href="admin_salas.html" id="link-admin-salas" class="hidden hover:text-blue-300 transition" data-i18n="nav.salas"><i class="fas fa-layer-group mr-1"></i> Gestión Salas</a>
+        <a href="admin_moderadores.html" id="link-admin-mods" class="hidden hover:text-blue-300 transition" data-i18n="nav.mods"><i class="fas fa-user-shield mr-1"></i> Moderadores</a>
+        <a href="admin_usuarios.html" id="link-admin-users" class="hidden hover:text-blue-300 transition" data-i18n="nav.usuarios"><i class="fas fa-users-cog mr-1"></i> Usuarios</a>
+        <a href="moderacion.html" id="link-moderacion" class="hidden hover:text-blue-300 transition" data-i18n="nav.modPanel"><i class="fas fa-shield-halved mr-1"></i> Moderación</a>
+        <a href="perfil.html" class="hover:text-blue-300 transition" data-i18n="nav.perfil"><i class="fas fa-user mr-1"></i> Mi Perfil</a>
+        <div class="flex items-center border-l border-blue-700 pl-4 space-x-3">
+          <button id="btn-lang-es" class="text-xs font-bold hover:text-blue-300 px-1">ES</button><span class="text-gray-500">|</span><button id="btn-lang-en" class="text-xs font-bold hover:text-blue-300 px-1">EN</button>
+          <button id="btn-tema" class="text-lg hover:scale-110 transition-transform ml-2 px-2"><i class="fas fa-moon"></i></button>
+        </div>
+        <div class="flex items-center border-l border-blue-700 pl-4 space-x-4">
+          <span id="user-display" class="text-sm font-medium text-blue-200">Invitado</span>
+          <button id="btn-logout" class="bg-red-600 hover:bg-red-700 px-3 py-1 rounded text-sm transition" data-i18n="nav.salir"><i class="fas fa-sign-out-alt"></i> Salir</button>
+        </div>
+      </div>
+    </div>
   </div>
 </nav>
 
 <main class="max-w-4xl mx-auto py-8 px-4">
+  <button id="btnVolverSala" class="mb-4 text-blue-600 dark:text-blue-400 hover:underline font-bold" data-i18n="btn.volver"><i class="fas fa-arrow-left"></i> Volver</button>
 
-  <div id="contenedorPregunta" class="bg-white p-6 rounded-lg shadow-md mb-8 border-l-4 border-blue-800">
-    <p class="text-gray-500 italic">Cargando pregunta...</p>
+  <div id="alertaModeracion" class="hidden bg-orange-100 dark:bg-orange-900 border-l-4 border-orange-500 text-orange-700 dark:text-orange-300 p-4 mb-6 rounded shadow-sm">
+    <p class="font-bold"><i class="fas fa-shield-alt mr-2"></i>Sala Moderada</p>
+    <p class="text-sm">Tus respuestas serán revisadas por un moderador antes de ser públicas.</p>
   </div>
 
-  <div class="mb-8 pl-4 md:pl-10 border-l-2 border-gray-300">
-    <h3 class="text-lg font-bold text-gray-700 mb-4"><i class="fas fa-reply-all"></i> Respuestas</h3>
-    <div id="listaRespuestas" class="space-y-4">
-    </div>
-  </div>
+  <div id="contenedorPregunta" class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md mb-8 transition-colors border border-gray-100 dark:border-gray-700"></div>
 
-  <div class="bg-gray-50 p-6 rounded-lg shadow-inner border border-gray-200">
-    <h4 class="font-bold text-gray-800 mb-2">Añadir una respuesta</h4>
+  <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md mb-8 transition-colors border border-gray-100 dark:border-gray-700">
+    <h3 class="text-lg font-bold text-gray-800 dark:text-gray-200 mb-4">Añadir una respuesta</h3>
+    <div id="mensajeAlerta" class="hidden mb-4"></div>
     <form id="formResponder">
-      <textarea id="contenidoRespuesta" required rows="3" class="w-full border p-3 rounded focus:ring focus:ring-blue-200 focus:outline-none" placeholder="Escribe tu respuesta o comentario..."></textarea>
-      <div class="flex justify-between items-center mt-3">
-        <p id="alertaModeracion" class="text-sm text-orange-600 hidden"><i class="fas fa-info-circle"></i> Esta sala está moderada. Tu respuesta requerirá aprobación.</p>
-        <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded font-bold hover:bg-blue-700 transition ml-auto">Publicar Respuesta</button>
-      </div>
+      <textarea id="contenidoRespuesta" required rows="3" class="w-full border dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white p-3 rounded focus:ring-2 focus:ring-blue-500 focus:outline-none transition-colors" placeholder="Escribe tu respuesta..."></textarea>
+      <button type="submit" class="mt-3 bg-green-600 text-white px-6 py-2 rounded font-bold hover:bg-green-700 transition shadow-sm" data-i18n="btn.responder">Publicar Respuesta</button>
     </form>
-    <div id="mensajeAlerta" class="hidden mt-4"></div>
   </div>
 
+  <div>
+    <h3 class="text-xl font-bold text-gray-800 dark:text-gray-200 mb-4 border-b dark:border-gray-700 pb-2">Respuestas</h3>
+    <div id="listaRespuestas" class="space-y-4"></div>
+  </div>
 </main>
 
 <script type="module" src="js/pregunta.js"></script>

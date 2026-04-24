@@ -2,73 +2,92 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Panel Admin - Gestión de Moderadores</title>
+    <title>Admin - Moderadores</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>tailwind.config = { darkMode: 'class' }</script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-<body class="bg-gray-50 min-h-screen">
-<nav class="bg-blue-800 p-4 text-white flex justify-between shadow-lg">
-    <h1 class="font-bold text-xl">Foro DAW - Administración</h1>
-    <div class="flex gap-4">
-        <a href="admin_salas.html" class="underline hover:text-blue-200">Gestión de Salas</a>
-        <a href="index.html" class="underline hover:text-blue-200">Volver al Inicio</a>
+<body class="bg-gray-50 dark:bg-gray-900 transition-colors duration-300 min-h-screen">
+
+<nav class="bg-blue-900 dark:bg-black text-white shadow-lg transition-colors duration-300">
+    <div class="max-w-7xl mx-auto px-4">
+        <div class="flex justify-between items-center h-16">
+            <div class="flex items-center space-x-2"><i class="fas fa-comments text-2xl text-blue-300"></i><span class="font-bold text-xl tracking-tight">Foro DAW</span></div>
+            <div class="hidden md:flex items-center space-x-6" id="nav-links">
+                <a href="index.html" class="hover:text-blue-300 transition" data-i18n="nav.inicio"><i class="fas fa-home mr-1"></i> Inicio</a>
+                <a href="admin_salas.html" id="link-admin-salas" class="hidden hover:text-blue-300 transition" data-i18n="nav.salas"><i class="fas fa-layer-group mr-1"></i> Gestión Salas</a>
+                <a href="admin_moderadores.html" id="link-admin-mods" class="hidden hover:text-blue-300 transition" data-i18n="nav.mods"><i class="fas fa-user-shield mr-1"></i> Moderadores</a>
+                <a href="admin_usuarios.html" id="link-admin-users" class="hidden hover:text-blue-300 transition" data-i18n="nav.usuarios"><i class="fas fa-users-cog mr-1"></i> Usuarios</a>
+                <a href="moderacion.html" id="link-moderacion" class="hidden hover:text-blue-300 transition" data-i18n="nav.modPanel"><i class="fas fa-shield-halved mr-1"></i> Moderación</a>
+                <a href="perfil.html" class="hover:text-blue-300 transition" data-i18n="nav.perfil"><i class="fas fa-user mr-1"></i> Mi Perfil</a>
+                <div class="flex items-center border-l border-blue-700 pl-4 space-x-3">
+                    <button id="btn-lang-es" class="text-xs font-bold hover:text-blue-300 px-1">ES</button><span class="text-gray-500">|</span><button id="btn-lang-en" class="text-xs font-bold hover:text-blue-300 px-1">EN</button>
+                    <button id="btn-tema" class="text-lg hover:scale-110 transition-transform ml-2 px-2"><i class="fas fa-moon"></i></button>
+                </div>
+                <div class="flex items-center border-l border-blue-700 pl-4 space-x-4">
+                    <span id="user-display" class="text-sm font-medium text-blue-200">Invitado</span>
+                    <button id="btn-logout" class="bg-red-600 hover:bg-red-700 px-3 py-1 rounded text-sm transition" data-i18n="nav.salir"><i class="fas fa-sign-out-alt"></i> Salir</button>
+                </div>
+            </div>
+        </div>
     </div>
 </nav>
 
-<div class="max-w-6xl mx-auto p-6 grid grid-cols-1 md:grid-cols-2 gap-8">
+<div class="max-w-6xl mx-auto p-6 grid grid-cols-1 md:grid-cols-2 gap-8 mt-4">
 
-    <div class="bg-white p-6 rounded-lg shadow-md h-fit">
-        <h2 class="text-xl font-bold mb-4">Registrar Nuevo Moderador</h2>
+    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md h-fit border border-gray-100 dark:border-gray-700 transition-colors">
+        <h2 class="text-xl font-bold mb-4 text-gray-800 dark:text-white">Registrar Nuevo Moderador</h2>
         <form id="formCrearModerador" class="space-y-4">
-            <input type="text" id="nombreMod" placeholder="Nombre completo" required class="w-full border p-2 rounded focus:ring-2 focus:ring-blue-400">
-            <input type="email" id="emailMod" placeholder="Correo electrónico" required class="w-full border p-2 rounded focus:ring-2 focus:ring-blue-400">
-            <input type="password" id="passwordMod" placeholder="Contraseña" required class="w-full border p-2 rounded focus:ring-2 focus:ring-blue-400">
+            <input type="text" id="nombreMod" placeholder="Nombre completo" required class="w-full border dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white p-2 rounded focus:ring-2 focus:ring-blue-400 transition-colors">
+            <input type="email" id="emailMod" placeholder="Correo electrónico" required class="w-full border dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white p-2 rounded focus:ring-2 focus:ring-blue-400 transition-colors">
+            <input type="password" id="passwordMod" placeholder="Contraseña" required class="w-full border dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white p-2 rounded focus:ring-2 focus:ring-blue-400 transition-colors">
             <button type="submit" class="w-full bg-blue-600 text-white p-2 rounded font-bold hover:bg-blue-700">Registrar Moderador</button>
         </form>
         <div id="alertaMod" class="hidden mt-4"></div>
     </div>
 
-    <div class="bg-white p-6 rounded-lg shadow-md h-fit">
-        <h2 class="text-xl font-bold mb-4">Asignar Moderador a Sala</h2>
+    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md h-fit border border-gray-100 dark:border-gray-700 transition-colors">
+        <h2 class="text-xl font-bold mb-4 text-gray-800 dark:text-white">Asignar Moderador a Sala</h2>
         <form id="formAsignarModerador" class="space-y-4">
             <div>
-                <label class="block text-sm font-bold mb-1">Selecciona el Moderador:</label>
-                <select id="selectModerador" required class="w-full border p-2 rounded"><option value="">Cargando...</option></select>
+                <label class="block text-sm font-bold mb-1 text-gray-700 dark:text-gray-300">Selecciona el Moderador:</label>
+                <select id="selectModerador" required class="w-full border dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white p-2 rounded transition-colors"><option value="">Cargando...</option></select>
             </div>
             <div>
-                <label class="block text-sm font-bold mb-1">Selecciona la Sala:</label>
-                <select id="selectSala" required class="w-full border p-2 rounded"><option value="">Cargando...</option></select>
+                <label class="block text-sm font-bold mb-1 text-gray-700 dark:text-gray-300">Selecciona la Sala:</label>
+                <select id="selectSala" required class="w-full border dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white p-2 rounded transition-colors"><option value="">Cargando...</option></select>
             </div>
-            <button type="submit" class="w-full bg-green-600 text-white p-2 rounded font-bold hover:bg-green-700">Asignar a Sala</button>
+            <button type="submit" class="w-full bg-green-600 text-white p-2 rounded font-bold hover:bg-green-700 shadow-sm">Asignar a Sala</button>
         </form>
         <div id="alertaAsignacion" class="hidden mt-4"></div>
     </div>
 
-    <div class="bg-white p-6 rounded-lg shadow-md col-span-1 md:col-span-2">
-        <h2 class="text-xl font-bold mb-4 text-gray-800">Salas con Moderador Asignado</h2>
-        <table class="w-full text-left border-collapse border border-gray-200">
+    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md col-span-1 md:col-span-2 border border-gray-100 dark:border-gray-700 transition-colors overflow-x-auto">
+        <h2 class="text-xl font-bold mb-4 text-gray-800 dark:text-white">Salas con Moderador Asignado</h2>
+        <table class="w-full text-left border-collapse border border-gray-200 dark:border-gray-700">
             <thead>
-            <tr class="bg-gray-100">
-                <th class="p-3 border">Sala Temática</th>
-                <th class="p-3 border">Moderador a Cargo</th>
-                <th class="p-3 border text-center">Acción</th>
+            <tr class="bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200">
+                <th class="p-3 border dark:border-gray-600">Sala Temática</th>
+                <th class="p-3 border dark:border-gray-600">Moderador a Cargo</th>
+                <th class="p-3 border dark:border-gray-600 text-center">Acción</th>
             </tr>
             </thead>
-            <tbody id="listaSalasModeradas">
+            <tbody id="listaSalasModeradas" class="dark:text-gray-300">
             </tbody>
         </table>
     </div>
 
-    <div class="bg-white p-6 rounded-lg shadow-md col-span-1 md:col-span-2">
-        <h2 class="text-xl font-bold mb-4 text-gray-800">Directorio General de Moderadores</h2>
-        <table class="w-full text-left border-collapse border border-gray-200">
+    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md col-span-1 md:col-span-2 border border-gray-100 dark:border-gray-700 transition-colors overflow-x-auto">
+        <h2 class="text-xl font-bold mb-4 text-gray-800 dark:text-white">Directorio General de Moderadores</h2>
+        <table class="w-full text-left border-collapse border border-gray-200 dark:border-gray-700">
             <thead>
-            <tr class="bg-gray-100">
-                <th class="p-3 border">ID</th>
-                <th class="p-3 border">Nombre</th>
-                <th class="p-3 border">Email</th>
+            <tr class="bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200">
+                <th class="p-3 border dark:border-gray-600">ID</th>
+                <th class="p-3 border dark:border-gray-600">Nombre</th>
+                <th class="p-3 border dark:border-gray-600">Email</th>
             </tr>
             </thead>
-            <tbody id="listaModeradoresTabla"></tbody>
+            <tbody id="listaModeradoresTabla" class="dark:text-gray-300"></tbody>
         </table>
     </div>
 </div>

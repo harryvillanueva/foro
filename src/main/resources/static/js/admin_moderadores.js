@@ -1,6 +1,9 @@
-import { API_BASE_URL, mostrarAlerta } from './app.js';
+import { API_BASE_URL, mostrarAlerta, initGlobalFeatures } from './app.js';
 
 document.addEventListener('DOMContentLoaded', () => {
+    // Inicializar el Menú, Idioma y Dark Mode
+    initGlobalFeatures();
+
     const token = localStorage.getItem('jwt_foro');
     if (!token) { window.location.href = 'login.html'; return; }
 
@@ -25,7 +28,12 @@ document.addEventListener('DOMContentLoaded', () => {
             selectModerador.innerHTML = '<option value="">Elige un moderador...</option>';
             tablaModeradores.innerHTML = '';
             moderadoresGlobal.forEach(mod => {
-                tablaModeradores.innerHTML += `<tr><td class="p-3 border text-gray-500 font-bold">#${mod.id}</td><td class="p-3 border">${mod.nombre}</td><td class="p-3 border">${mod.email}</td></tr>`;
+                tablaModeradores.innerHTML += `
+                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                        <td class="p-3 border dark:border-gray-600 text-gray-500 dark:text-gray-400 font-bold">#${mod.id}</td>
+                        <td class="p-3 border dark:border-gray-600 dark:text-gray-200">${mod.nombre}</td>
+                        <td class="p-3 border dark:border-gray-600 dark:text-gray-200">${mod.email}</td>
+                    </tr>`;
                 selectModerador.innerHTML += `<option value="${mod.id}">${mod.nombre} (${mod.email})</option>`;
             });
 
@@ -43,18 +51,20 @@ document.addEventListener('DOMContentLoaded', () => {
             tablaSalasModeradas.innerHTML = '';
 
             if(salasOcupadas.length === 0) {
-                tablaSalasModeradas.innerHTML = '<tr><td colspan="3" class="p-4 text-center text-gray-500">No hay salas con moderadores asignados.</td></tr>';
+                tablaSalasModeradas.innerHTML = '<tr><td colspan="3" class="p-4 text-center text-gray-500 dark:text-gray-400">No hay salas con moderadores asignados.</td></tr>';
             } else {
                 salasOcupadas.forEach(sala => {
                     const mod = moderadoresGlobal.find(m => m.id === sala.moderadorId);
                     const modNombre = mod ? mod.nombre : `ID Desconocido: ${sala.moderadorId}`;
 
                     tablaSalasModeradas.innerHTML += `
-                        <tr class="hover:bg-gray-50">
-                            <td class="p-3 border font-medium">${sala.nombre}</td>
-                            <td class="p-3 border text-blue-600 font-bold">${modNombre}</td>
-                            <td class="p-3 border text-center">
-                                <button data-id="${sala.id}" class="btn-quitar bg-red-100 text-red-600 hover:bg-red-600 hover:text-white px-4 py-1 rounded font-bold transition-colors">Quitar Moderador</button>
+                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                            <td class="p-3 border dark:border-gray-600 font-medium dark:text-gray-200">${sala.nombre}</td>
+                            <td class="p-3 border dark:border-gray-600 text-blue-600 dark:text-blue-400 font-bold">${modNombre}</td>
+                            <td class="p-3 border dark:border-gray-600 text-center">
+                                <button data-id="${sala.id}" class="btn-quitar bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400 hover:bg-red-600 hover:text-white dark:hover:bg-red-600 dark:hover:text-white px-4 py-1 rounded font-bold transition-colors">
+                                    <i class="fas fa-user-minus"></i> Quitar
+                                </button>
                             </td>
                         </tr>
                     `;
