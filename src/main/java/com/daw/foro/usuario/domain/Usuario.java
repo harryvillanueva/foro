@@ -7,11 +7,11 @@ public class Usuario {
     private String password;
     private Rol rol;
 
-    // Constructor vacío
+
     public Usuario() {
     }
 
-    // Constructor con parámetros
+
     public Usuario(Long id, String nombre, String email, String password, Rol rol) {
         this.id = id;
         this.nombre = nombre;
@@ -20,7 +20,7 @@ public class Usuario {
         this.rol = rol;
     }
 
-    // Getters y Setters (Sin Lombok, los escribimos a mano)
+
     public Long getId() {
         return id;
     }

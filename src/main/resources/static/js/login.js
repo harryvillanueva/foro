@@ -18,15 +18,9 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             if (respuesta.ok) {
-                // Obtenemos el token del backend
                 const token = await respuesta.text();
-
-                // ¡LA MAGIA! Guardamos el token en el LocalStorage del navegador
                 localStorage.setItem('jwt_foro', token);
-
                 mostrarAlerta(contenedorAlerta, "¡Login exitoso! Entrando...", false);
-
-                // Redirigir a la página principal del foro después de 1 segundo
                 setTimeout(() => {
                     window.location.href = 'index.html';
                 }, 1000);

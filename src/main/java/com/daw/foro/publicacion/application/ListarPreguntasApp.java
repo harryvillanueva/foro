@@ -17,16 +17,13 @@ public class ListarPreguntasApp {
     @Autowired
     private PublicacionJpaRepository repository;
 
-    // Fíjate que ahora devolvemos el DTO, no la Entidad
     public List<PreguntaResponseDTO> ejecutar(Long salaId) {
 
-        // 1. Buscamos las preguntas aprobadas
         List<PublicacionEntity> preguntas = repository.findBySalaIdAndTipoAndEstadoOrderByFechaCreacionDesc(
                 salaId, TipoPublicacion.PREGUNTA, EstadoPublicacion.APROBADA);
 
         List<PreguntaResponseDTO> resultado = new ArrayList<>();
 
-        // 2. Por cada pregunta, armamos el DTO y contamos sus respuestas
         for (PublicacionEntity p : preguntas) {
             PreguntaResponseDTO dto = new PreguntaResponseDTO();
             dto.setId(p.getId());
@@ -34,7 +31,6 @@ public class ListarPreguntasApp {
             dto.setAutorNombre(p.getAutorNombre());
             dto.setFechaCreacion(p.getFechaCreacion());
 
-            // ¡MAGIA! Contamos las respuestas aprobadas que apuntan a esta pregunta
             long respuestas = repository.countByPreguntaPadreIdAndEstado(p.getId(), EstadoPublicacion.APROBADA);
             dto.setCantidadRespuestas(respuestas);
 

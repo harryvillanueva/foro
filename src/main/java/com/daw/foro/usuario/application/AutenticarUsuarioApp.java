@@ -18,7 +18,6 @@ public class AutenticarUsuarioApp {
         UsuarioEntity usuario = usuarioRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Credenciales inválidas"));
 
-        // REGLA DE BANEO GLOBAL
         if (!usuario.isActivo()) {
             throw new RuntimeException("Tu cuenta ha sido DESACTIVADA permanentemente por la administración del foro.");
         }

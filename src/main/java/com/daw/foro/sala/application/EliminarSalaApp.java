@@ -22,16 +22,9 @@ public class EliminarSalaApp {
             throw new RuntimeException("La sala no existe o ya fue eliminada.");
         }
 
-        // 1. Borramos todas las preguntas y respuestas de la sala
         publicacionRepository.deleteBySalaId(salaId);
-
-        // 2. Borramos las suscripciones y favoritos asociados a la sala
         suscripcionRepository.deleteBySalaId(salaId);
-
-        // 3. Borramos el registro de usuarios bloqueados en esta sala
         bloqueoRepository.deleteBySalaId(salaId);
-
-        // 4. Finalmente, borramos la sala
         salaRepository.deleteById(salaId);
     }
 }

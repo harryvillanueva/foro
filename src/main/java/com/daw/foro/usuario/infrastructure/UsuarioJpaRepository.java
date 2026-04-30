@@ -10,9 +10,6 @@ import java.util.Optional;
 @Repository
 public interface UsuarioJpaRepository extends JpaRepository<UsuarioEntity, Long> {
     Optional<UsuarioEntity> findByEmail(String email);
-
-    // NUEVO: Para buscar si el usuario mencionado existe realmente
     Optional<UsuarioEntity> findByNombre(String nombre);
-
     List<UsuarioEntity> findByRol(Rol rol);
 }

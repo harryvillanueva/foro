@@ -37,7 +37,6 @@ public class ModeracionAvanzadaController {
         return ResponseEntity.ok("Petición de baja enviada a la Superadministración.");
     }
 
-    // NUEVO ENDPOINT
     @GetMapping("/sala/{salaId}/participantes")
     public ResponseEntity<List<UsuarioResponseDTO>> listarParticipantes(@PathVariable Long salaId) {
         return ResponseEntity.ok(listarParticipantesApp.ejecutar(salaId));

@@ -30,7 +30,7 @@ public class NotificacionEntity {
         this.mensaje = mensaje;
     }
 
-    // Getters y Setters
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     public Long getUsuarioDestinoId() { return usuarioDestinoId; }

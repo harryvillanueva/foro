@@ -12,7 +12,6 @@ public class ListarPendientesApp {
     @Autowired private PublicacionJpaRepository repository;
 
     public List<PublicacionEntity> ejecutar(Long salaId) {
-        // Solo traemos lo que está en espera de aprobación
         return repository.findBySalaIdAndEstadoOrderByFechaCreacionDesc(salaId, EstadoPublicacion.PENDIENTE);
     }
 }

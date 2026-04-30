@@ -3,7 +3,7 @@ package com.daw.foro.publicacion.infrastructure.dto;
 public class PublicarRequestDTO {
     private Long salaId;
     private String contenido;
-    private Long preguntaPadreId; // Puede venir nulo si es una nueva pregunta
+    private Long preguntaPadreId;
 
     public Long getSalaId() { return salaId; }
     public void setSalaId(Long salaId) { this.salaId = salaId; }

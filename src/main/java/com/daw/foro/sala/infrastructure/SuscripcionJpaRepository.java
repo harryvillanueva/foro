@@ -11,7 +11,5 @@ public interface SuscripcionJpaRepository extends JpaRepository<SuscripcionEntit
     List<SuscripcionEntity> findBySalaId(Long salaId);
     Optional<SuscripcionEntity> findByUsuarioIdAndSalaId(Long usuarioId, Long salaId);
     void deleteByUsuarioIdAndSalaId(Long usuarioId, Long salaId);
-
-    // NUEVO: Para borrar suscripciones al eliminar la sala
     void deleteBySalaId(Long salaId);
 }

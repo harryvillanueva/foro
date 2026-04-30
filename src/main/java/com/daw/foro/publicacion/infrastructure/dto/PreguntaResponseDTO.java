@@ -7,9 +7,9 @@ public class PreguntaResponseDTO {
     private String contenido;
     private String autorNombre;
     private LocalDateTime fechaCreacion;
-    private long cantidadRespuestas; // Aquí guardaremos el contador
+    private long cantidadRespuestas;
 
-    // Getters y Setters
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 

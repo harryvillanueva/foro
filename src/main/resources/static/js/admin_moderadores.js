@@ -49,7 +49,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 document.querySelectorAll('.btn-quitar').forEach(btn => {
                     btn.addEventListener('click', async (e) => {
-                        // SOLUCIÓN: Guardar el ID antes del await
                         const salaId = e.currentTarget.dataset.id;
 
                         const { isConfirmed } = await swalCustom().fire({

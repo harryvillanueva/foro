@@ -26,7 +26,6 @@ public class AsignarModeradorApp {
         salaRepository.save(sala);
     }
 
-    // NUEVO MÉTODO
     public void remover(Long salaId) {
         SalaEntity sala = salaRepository.findById(salaId)
                 .orElseThrow(() -> new RuntimeException("La sala no existe."));

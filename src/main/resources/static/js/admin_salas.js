@@ -24,7 +24,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         document.querySelectorAll('.btn-eliminar').forEach(btn => btn.addEventListener('click', async (e) => {
-            // SOLUCIÓN: Guardar el ID antes del await
             const salaId = e.currentTarget.dataset.id;
 
             const result = await swalCustom().fire({
@@ -38,7 +37,6 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             if(result.isConfirmed) {
-                // Usamos la variable salaId guardada
                 const resp = await fetch(`${API_BASE_URL}/salas/admin/eliminar/${salaId}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` } });
                 if(resp.ok) { mostrarAlerta(null, "La sala ha sido destruida.", false); cargarSalas(); }
                 else { mostrarAlerta(null, await resp.text(), true); }

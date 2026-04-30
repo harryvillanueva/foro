@@ -17,11 +17,11 @@ public class PublicacionEntity {
     private String contenido;
 
     private Long autorId;
-    private String autorNombre; // Desnormalizado para lectura rápida
+    private String autorNombre;
     private Long salaId;
 
     @Column(nullable = true)
-    private Long preguntaPadreId; // Si es nulo, es una PREGUNTA. Si tiene valor, es RESPUESTA.
+    private Long preguntaPadreId;
 
     @Enumerated(EnumType.STRING)
     private TipoPublicacion tipo;
@@ -38,7 +38,6 @@ public class PublicacionEntity {
         this.salaId = salaId; this.preguntaPadreId = preguntaPadreId; this.tipo = tipo; this.estado = estado;
     }
 
-    // Escribe los Getters y Setters para TODOS los atributos...
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     public String getContenido() { return contenido; }

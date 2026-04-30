@@ -41,7 +41,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }));
 
             document.querySelectorAll('.btn-limite').forEach(btn => btn.addEventListener('click', async (e) => {
-                // SOLUCIÓN: Guardar el ID
                 const salaId = e.currentTarget.dataset.id;
 
                 const { value: num } = await swalCustom().fire({
@@ -115,7 +114,6 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const asignarEventosGenerales = (salaId, nombreSala) => {
-        // PROCESAR ESTADO
         document.querySelectorAll('.btn-procesar').forEach(b => b.addEventListener('click', async (e) => {
             const id = e.currentTarget.dataset.id;
             const estado = e.currentTarget.dataset.estado;
@@ -123,7 +121,6 @@ document.addEventListener('DOMContentLoaded', () => {
             cargarPendientes(salaId, nombreSala);
         }));
 
-        // ENVIAR AVISO A USUARIO
         document.querySelectorAll('.btn-avisar').forEach(b => b.addEventListener('click', async (e) => {
             const autorId = e.currentTarget.dataset.autor; // SOLUCIÓN: Extraer antes del await
 
@@ -140,9 +137,8 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }));
 
-        // BLOQUEAR USUARIO
         document.querySelectorAll('.btn-bloquear').forEach(b => b.addEventListener('click', async (e) => {
-            const autor = e.currentTarget.dataset.autor;  // SOLUCIÓN: Extraer antes del await
+            const autor = e.currentTarget.dataset.autor;
             const sala = e.currentTarget.dataset.sala;
             const dias = e.currentTarget.dataset.dias;
 
@@ -160,9 +156,8 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }));
 
-        // PEDIR BAJA GLOBAL
         document.querySelectorAll('.btn-baja').forEach(b => b.addEventListener('click', async (e) => {
-            const autorId = e.currentTarget.dataset.autor; // SOLUCIÓN: Extraer antes del await
+            const autorId = e.currentTarget.dataset.autor;
 
             const { isConfirmed } = await swalCustom().fire({
                 title: '¿Solicitar Baja Global?',

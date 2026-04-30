@@ -28,15 +28,12 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/", "/*.html", "/js/**", "/css/**", "/img/**").permitAll()
-
-                        // NUEVO: Protegeremos las rutas de las salas para que solo el Superadmin las cree
                         .requestMatchers("/api/salas/admin/**").hasRole("SUPERADMIN")
                         .requestMatchers("/api/admin/**").hasRole("SUPERADMIN")
                         .requestMatchers("/api/moderacion/**").hasAnyRole("SUPERADMIN", "MODERADOR")
 
                         .anyRequest().authenticated()
                 )
-                // NUEVO: Añadimos nuestro filtro antes del filtro por defecto de Spring
                 .addFilterBefore(jwtFilter, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

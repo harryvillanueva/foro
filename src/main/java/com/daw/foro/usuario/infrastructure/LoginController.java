@@ -19,7 +19,6 @@ public class LoginController {
             String token = autenticarUsuarioApp.ejecutar(request.getEmail(), request.getPassword());
             return ResponseEntity.ok(token);
         } catch (RuntimeException e) {
-            // Devolvemos 401 Unauthorized si las credenciales son incorrectas
             return ResponseEntity.status(401).body(e.getMessage());
         }
     }

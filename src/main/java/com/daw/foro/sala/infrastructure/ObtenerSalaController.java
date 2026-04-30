@@ -15,11 +15,9 @@ public class ObtenerSalaController {
     @GetMapping("/{id}")
     public ResponseEntity<?> obtener(@PathVariable Long id) {
         try {
-            // Pasamos el email del usuario logueado para que el backend evalúe si tiene acceso
             String email = SecurityContextHolder.getContext().getAuthentication().getName();
             return ResponseEntity.ok(obtenerSalaApp.ejecutar(id, email));
         } catch (RuntimeException e) {
-            // Si salta el error de bloqueo, devolvemos un 403 Forbidden
             return ResponseEntity.status(403).body(e.getMessage());
         }
     }

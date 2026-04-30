@@ -20,7 +20,6 @@ public class RegistrarModeradorApp {
         if (usuarioRepository.findByEmail(email).isPresent()) {
             throw new RuntimeException("El email ya está registrado.");
         }
-        // Registramos FORZANDO el rol de MODERADOR
         UsuarioEntity nuevoMod = new UsuarioEntity(nombre, email, passwordEncoder.encode(passwordPlana), Rol.MODERADOR);
         usuarioRepository.save(nuevoMod);
     }

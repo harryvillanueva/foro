@@ -23,7 +23,6 @@ public class UsuarioEntity {
     @Enumerated(EnumType.STRING)
     private Rol rol;
 
-    // NUEVO: Estado de la cuenta
     private boolean activo = true;
 
     public UsuarioEntity() {}
@@ -35,7 +34,6 @@ public class UsuarioEntity {
         this.rol = rol;
     }
 
-    // Getters y Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     public String getNombre() { return nombre; }

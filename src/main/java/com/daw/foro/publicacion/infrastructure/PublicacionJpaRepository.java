@@ -16,7 +16,5 @@ public interface PublicacionJpaRepository extends JpaRepository<PublicacionEntit
     List<PublicacionEntity> findBySalaIdAndEstadoOrderByFechaCreacionDesc(Long salaId, EstadoPublicacion estado);
     List<PublicacionEntity> findByAutorIdOrderByFechaCreacionDesc(Long autorId);
     long countByAutorIdAndSalaIdAndTipoAndFechaCreacionAfter(Long autorId, Long salaId, TipoPublicacion tipo, LocalDateTime fecha);
-
-    // NUEVO: Para borrar todas las publicaciones al eliminar la sala
     void deleteBySalaId(Long salaId);
 }

@@ -16,7 +16,6 @@ public class PublicarController {
     @PostMapping
     public ResponseEntity<String> publicar(@RequestBody PublicarRequestDTO dto) {
         try {
-            // Extraemos el email del usuario logueado automáticamente desde el token JWT interceptado
             String emailAutor = SecurityContextHolder.getContext().getAuthentication().getName();
             publicarApp.ejecutar(emailAutor, dto.getSalaId(), dto.getContenido(), dto.getPreguntaPadreId());
             return ResponseEntity.ok("Publicación procesada correctamente.");

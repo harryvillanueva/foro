@@ -1,7 +1,6 @@
 import { API_BASE_URL, initGlobalFeatures, diccionario, obtenerIdiomaActual } from './app.js';
 
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. ARRANCAR CARACTERÍSTICAS GLOBALES
     initGlobalFeatures();
 
     const token = localStorage.getItem('jwt_foro');
@@ -48,7 +47,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
             salas.forEach(sala => {
                 const card = document.createElement('div');
-                // Clases dark: para las tarjetas dinámicas
                 card.className = "bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-md transition-all relative";
 
                 const esFavorita = favIds.includes(sala.id);
@@ -86,7 +84,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     cargarSalasVisibles();
 
-    // Escuchar cambios de idioma para refrescar las tarjetas
     document.getElementById('btn-lang-es')?.addEventListener('click', cargarSalasVisibles);
     document.getElementById('btn-lang-en')?.addEventListener('click', cargarSalasVisibles);
 });

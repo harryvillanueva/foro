@@ -27,8 +27,6 @@ public class SuscripcionEntity {
         this.usuarioId = usuarioId;
         this.salaId = salaId;
     }
-
-    // Getters y Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     public Long getUsuarioId() { return usuarioId; }

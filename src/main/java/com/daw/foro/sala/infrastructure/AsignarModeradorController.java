@@ -22,7 +22,6 @@ public class AsignarModeradorController {
         }
     }
 
-    // NUEVO ENDPOINT
     @PostMapping("/remover-moderador/{salaId}")
     public ResponseEntity<String> remover(@PathVariable Long salaId) {
         try {

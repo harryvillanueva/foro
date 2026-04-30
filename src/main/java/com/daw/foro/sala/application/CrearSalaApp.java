@@ -12,7 +12,6 @@ public class CrearSalaApp {
     private SalaJpaRepository salaRepository;
 
     public void ejecutar(String nombre, String tematica, boolean requiereModeracion) {
-        // Regla: No pueden haber dos salas con el mismo nombre (el repo ya tiene unique=true, pero validamos)
         SalaEntity nuevaSala = new SalaEntity(nombre, tematica, requiereModeracion);
         salaRepository.save(nuevaSala);
     }

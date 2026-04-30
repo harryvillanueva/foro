@@ -15,7 +15,6 @@ public class PreguntaDetalleController {
     @Autowired private ObtenerPublicacionApp obtenerPublicacionApp;
     @Autowired private ListarRespuestasApp listarRespuestasApp;
 
-    // Unimos todo en un solo endpoint para que el frontend haga una sola petición
     @GetMapping("/pregunta/{id}/detalles")
     public Map<String, Object> obtenerDetalles(@PathVariable Long id) {
         Map<String, Object> response = new HashMap<>();

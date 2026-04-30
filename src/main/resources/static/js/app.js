@@ -1,23 +1,19 @@
 export const API_BASE_URL = '/api';
-
-// ==========================================
-// SWEETALERT2: Configuración dinámica (Dark Mode & Tailwind)
-// ==========================================
 export function swalCustom() {
     const isDark = document.documentElement.classList.contains('dark');
     return Swal.mixin({
-        background: isDark ? '#1f2937' : '#ffffff', // Gris oscuro o blanco
+        background: isDark ? '#1f2937' : '#ffffff',
         color: isDark ? '#ffffff' : '#111827',
         customClass: {
             confirmButton: 'bg-blue-600 text-white px-4 py-2 rounded font-bold hover:bg-blue-700 mx-2 transition-colors',
             cancelButton: 'bg-gray-500 text-white px-4 py-2 rounded font-bold hover:bg-gray-600 mx-2 transition-colors',
             input: 'border p-2 rounded w-full dark:bg-gray-700 dark:border-gray-600 dark:text-white mt-4'
         },
-        buttonsStyling: false // Obliga a usar las clases de Tailwind
+        buttonsStyling: false
     });
 }
 
-// Ahora mostrarAlerta usa SweetAlert en toda la web
+
 export function mostrarAlerta(elementoContenedor, mensaje, esError = false) {
     swalCustom().fire({
         icon: esError ? 'error' : 'success',
@@ -28,9 +24,6 @@ export function mostrarAlerta(elementoContenedor, mensaje, esError = false) {
     });
 }
 
-// ==========================================
-// MÓDULO BILINGÜE (i18n)
-// ==========================================
 export const diccionario = {
     es: {
         "nav.inicio": "Inicio", "nav.salas": "Gestión Salas", "nav.mods": "Moderadores",
@@ -60,9 +53,7 @@ export function cambiarIdioma(lang) {
 
 export function obtenerIdiomaActual() { return localStorage.getItem('foro_lang') || 'es'; }
 
-// ==========================================
-// MÓDULO MODO OSCURO (Dark Mode)
-// ==========================================
+
 export function toggleDarkMode() {
     const isDark = document.documentElement.classList.toggle('dark');
     localStorage.setItem('foro_theme', isDark ? 'dark' : 'light');

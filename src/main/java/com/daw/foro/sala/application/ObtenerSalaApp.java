@@ -19,12 +19,9 @@ public class ObtenerSalaApp {
     @Autowired private BloqueoSalaJpaRepository bloqueoRepository;
     @Autowired private UsuarioJpaRepository usuarioRepository;
 
-    // Ahora recibimos también el email de quien intenta entrar
     public SalaEntity ejecutar(Long id, String emailUsuario) {
         UsuarioEntity usuario = usuarioRepository.findByEmail(emailUsuario)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-
-        // Comprobamos si el usuario está bloqueado en esta sala antes de dejarle entrar
         Optional<BloqueoSalaEntity> bloqueoOpt = bloqueoRepository.findByUsuarioIdAndSalaId(usuario.getId(), id);
 
         if (bloqueoOpt.isPresent()) {

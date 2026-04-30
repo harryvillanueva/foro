@@ -20,7 +20,7 @@ public class SalaEntity {
     private Long moderadorId;
 
     @Column(nullable = false, columnDefinition = "int default 0")
-    private int limitePreguntasSemana = 0; // 0 significa que no hay límite
+    private int limitePreguntasSemana = 0;
 
     public SalaEntity() {}
 

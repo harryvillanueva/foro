@@ -1,7 +1,6 @@
 import { API_BASE_URL, mostrarAlerta, initGlobalFeatures, diccionario, obtenerIdiomaActual, swalCustom } from './app.js';
 
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Inicializar Dark Mode y traducciones
     initGlobalFeatures();
 
     const token = localStorage.getItem('jwt_foro');
@@ -18,14 +17,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const formPregunta = document.getElementById('formPregunta');
     const listaPreguntas = document.getElementById('listaPreguntas');
 
-    // Función para pintar de azul los @usuarios mencionados
     const formatearMenciones = (texto) => texto.replace(/@([a-zA-Z0-9_]+)/g, '<span class="text-blue-600 dark:text-blue-400 font-bold bg-blue-50 dark:bg-blue-900/30 px-1 rounded cursor-pointer">@$1</span>');
 
     const cargarDetallesSala = async () => {
         try {
             const resp = await fetch(`${API_BASE_URL}/salas/${salaId}`, { headers: { 'Authorization': `Bearer ${token}` }});
 
-            // Si el backend nos rechaza (Error 403 por Bloqueo), usamos SweetAlert2
             if (!resp.ok) {
                 await swalCustom().fire({
                     icon: 'error',
@@ -133,7 +130,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (resp.ok) {
                 contenidoInput.value = '';
-                // Pasamos null como primer parámetro porque la nueva mostrarAlerta (SweetAlert) ya no necesita un contenedor HTML
                 mostrarAlerta(null, salaRequiereModeracion ? "Enviada a moderación." : "¡Publicada con éxito!", false);
                 if(!salaRequiereModeracion) cargarPreguntas();
             } else {
@@ -143,8 +139,6 @@ document.addEventListener('DOMContentLoaded', () => {
             mostrarAlerta(null, "Error de red al intentar publicar.", true);
         }
     });
-
-    // Refrescar los botones de suscripción si el usuario cambia el idioma dinámicamente
     document.getElementById('btn-lang-es')?.addEventListener('click', actualizarControlesSuscripcion);
     document.getElementById('btn-lang-en')?.addEventListener('click', actualizarControlesSuscripcion);
 

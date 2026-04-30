@@ -16,7 +16,6 @@ public class ListarHistorialUsuarioApp {
     public List<PublicacionEntity> ejecutar(String email) {
         UsuarioEntity user = usuarioRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-        // Asumiendo que el repositorio tiene este método:
         return publicacionRepository.findByAutorIdOrderByFechaCreacionDesc(user.getId());
     }
 }
